@@ -72,12 +72,12 @@ const songs = [
       "img/venmegam.jpeg",
   },
   {
-    title: "Maanguyilae - Duet",
-    name: "S. P. Balasubrahmanyam",
+    title: "Vaanganna Vanakkanganna",
+    name: "GV Prakash,Vijay,Santhanam",
     source:
-      "songs/Maanguyilae - Duet.mp3",
+      "songs/Vaanganna Vanakkanganna - G. V. Prakash, Vijay, Santhanam.m4a",
     cover:
-      "https://i.scdn.co/image/ab67616d00004851e4ad067fbfbd1fef6913f518",
+      "img/Vaanganna Vanakkanganna.jpeg",
   },
 
 
