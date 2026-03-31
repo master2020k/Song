@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Listening Hub - Spotify Style</title>
+  <title>Listening Hub - Online Songs</title>
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+  
   <!-- Swiper -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
   <style>
     /* --- Basic Reset --- */
-    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Arial', sans-serif; }
     body { background:#121212; color:white; }
 
     /* --- Layout --- */
@@ -78,7 +78,7 @@
   <nav class="main-menu">
     <div>
       <div class="user-info">
-        <img src="Src/lg1.jpg" alt="User Profile">
+        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="User Profile">
         <p>Thomas Shelby</p>
       </div>
       <ul>
@@ -104,26 +104,19 @@
       <h1>Popular Playlist</h1>
       <div class="swiper">
         <div class="swiper-wrapper">
-          <div class="swiper-slide"><img src="img/1.jpg"><div class="slide-overlay"><h2>Vibe Songs</h2><button>Listen <i class="fa fa-play"></i></button></div></div>
-          <div class="swiper-slide"><img src="img/2.jpg"><div class="slide-overlay"><h2>Music ON</h2><button>Listen <i class="fa fa-play"></i></button></div></div>
-          <div class="swiper-slide"><img src="img/3.jpg"><div class="slide-overlay"><h2>Spotify Hits</h2><button>Listen <i class="fa fa-play"></i></button></div></div>
+          <div class="swiper-slide"><img src="https://picsum.photos/300/200?random=1"><div class="slide-overlay"><h2>Vibe Songs</h2><button onclick="playOnlineSong(0)">Listen <i class="fa fa-play"></i></button></div></div>
+          <div class="swiper-slide"><img src="https://picsum.photos/300/200?random=2"><div class="slide-overlay"><h2>Music ON</h2><button onclick="playOnlineSong(1)">Listen <i class="fa fa-play"></i></button></div></div>
+          <div class="swiper-slide"><img src="https://picsum.photos/300/200?random=3"><div class="slide-overlay"><h2>Spotify Hits</h2><button onclick="playOnlineSong(2)">Listen <i class="fa fa-play"></i></button></div></div>
         </div>
         <div class="swiper-pagination"></div>
       </div>
 
       <h1>Featured Artists</h1>
       <div class="artist-container">
-        <div class="artist"><img src="img/gvp.jpeg"><p>GV Prakash</p></div>
-        <div class="artist"><img src="img/anirudh.jpeg"><p>Anirudh</p></div>
-        <div class="artist"><img src="img/28.jpg"><p>Jimin</p></div>
-        <div class="artist"><img src="img/24.jpg"><p>Billie Eilish</p></div>
-      </div>
-
-      <h1>Recommended Albums</h1>
-      <div class="album-container">
-        <div class="album"><img src="img/u1.jpeg"><h2>Daily Mix 1</h2><p>ARR, SPB</p></div>
-        <div class="album"><img src="img/play2.jpeg"><h2>BP Playlist</h2><p>Pravin Boopathi</p></div>
-        <div class="album"><img src="img/ilayaraja.jpeg"><h2>Daily Mix 2</h2><p>Ilayaraja</p></div>
+        <div class="artist"><img src="https://picsum.photos/100/100?random=4"><p>GV Prakash</p></div>
+        <div class="artist"><img src="https://picsum.photos/100/100?random=5"><p>Anirudh</p></div>
+        <div class="artist"><img src="https://picsum.photos/100/100?random=6"><p>Jimin</p></div>
+        <div class="artist"><img src="https://picsum.photos/100/100?random=7"><p>Billie Eilish</p></div>
       </div>
     </div>
 
@@ -131,8 +124,9 @@
     <div class="right-content">
       <h1>Recommended Songs</h1>
       <div class="song-container">
-        <div class="song"><img src="img/oru.jpeg"><div><h2>Oru Naalil</h2><p>Yuvan</p></div><span>6:25</span></div>
-        <div class="song"><img src="img/venmegam.jpeg"><div><h2>Venmegam Pennaga</h2><p>Yuvan</p></div><span>4:39</span></div>
+        <div class="song" onclick="playOnlineSong(0)"><img src="https://picsum.photos/50/50?random=1"><div><h2>Song 1</h2><p>Artist 1</p></div><span>3:45</span></div>
+        <div class="song" onclick="playOnlineSong(1)"><img src="https://picsum.photos/50/50?random=2"><div><h2>Song 2</h2><p>Artist 2</p></div><span>4:05</span></div>
+        <div class="song" onclick="playOnlineSong(2)"><img src="https://picsum.photos/50/50?random=3"><div><h2>Song 3</h2><p>Artist 3</p></div><span>5:10</span></div>
       </div>
     </div>
 
@@ -142,10 +136,10 @@
 
 <!-- Bottom Music Player -->
 <div class="music-player">
-  <img src="images/album-cover.png" alt="Album Cover">
+  <img id="player-cover" src="https://picsum.photos/50/50?random=1" alt="Album Cover">
   <div class="song-info">
-    <h2>Oru Naalil</h2>
-    <p>Yuvan Shankar Raja</p>
+    <h2 id="player-title">Song 1</h2>
+    <p id="player-artist">Artist 1</p>
   </div>
   <input type="range" id="progress" value="0">
   <div class="controls">
@@ -154,7 +148,7 @@
 
   <!-- Audio -->
   <audio id="song">
-    <source src="Oru-Naalil---It-All-Comes-Down-To-this!.mp3" type="audio/mpeg">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
   </audio>
 </div>
 
@@ -164,15 +158,47 @@
   // Swiper init
   new Swiper('.swiper', { loop:true, pagination:{ el:'.swiper-pagination', clickable:true } });
 
+  const onlineSongs = [
+    {
+      title: "Song 1",
+      artist: "Artist 1",
+      cover: "https://picsum.photos/50/50?random=1",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    },
+    {
+      title: "Song 2",
+      artist: "Artist 2",
+      cover: "https://picsum.photos/50/50?random=2",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+    },
+    {
+      title: "Song 3",
+      artist: "Artist 3",
+      cover: "https://picsum.photos/50/50?random=3",
+      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+    }
+  ];
+
   const song = document.getElementById("song");
   const icon = document.getElementById("icon");
   const progress = document.getElementById("progress");
+  const playerTitle = document.getElementById("player-title");
+  const playerArtist = document.getElementById("player-artist");
+  const playerCover = document.getElementById("player-cover");
+
+  function playOnlineSong(index){
+    const s = onlineSongs[index];
+    song.src = s.url;
+    playerTitle.textContent = s.title;
+    playerArtist.textContent = s.artist;
+    playerCover.src = s.cover;
+    song.play();
+    icon.classList.replace("fa-play","fa-pause");
+  }
 
   function playPause(){
     if(song.paused){
-      song.play().then(()=>{
-        icon.classList.replace("fa-play","fa-pause");
-      }).catch(err=>console.log(err));
+      song.play().then(()=> icon.classList.replace("fa-play","fa-pause"));
     }else{
       song.pause();
       icon.classList.replace("fa-pause","fa-play");
