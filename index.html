@@ -12,11 +12,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
   <style>
-    /* --- Basic Reset --- */
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Arial', sans-serif; }
     body { background:#121212; color:white; }
 
-    /* --- Layout --- */
     main { display:flex; height:100vh; overflow:hidden; }
 
     /* Sidebar */
@@ -53,7 +51,12 @@
     .song div { flex:1; margin-left:10px; }
     .song span { font-size:14px; color:#b3b3b3; }
 
-    /* --- Bottom Music Player --- */
+    /* Search */
+    .search-box { margin-bottom:20px; display:flex; gap:10px; }
+    .search-box input { flex:1; padding:8px 10px; border-radius:5px; border:none; outline:none; }
+    .search-box button { background:#1DB954; border:none; color:white; padding:8px 15px; border-radius:5px; cursor:pointer; }
+
+    /* Music Player */
     .music-player { position:fixed; bottom:0; left:0; width:100%; background:#181818; display:flex; align-items:center; justify-content:space-between; padding:10px 20px; border-top:1px solid #282828; }
     .music-player img { width:50px; height:50px; border-radius:5px; object-fit:cover; }
     .music-player .song-info { flex:1; margin-left:15px; }
@@ -62,11 +65,9 @@
     .music-player .controls { display:flex; align-items:center; gap:15px; }
     .music-player input[type=range] { flex:1; margin:0 15px; }
 
-    /* Scrollbar */
     ::-webkit-scrollbar { width:8px; height:8px; }
     ::-webkit-scrollbar-thumb { background:#1DB954; border-radius:4px; }
     ::-webkit-scrollbar-track { background:#121212; }
-
   </style>
 </head>
 
@@ -122,11 +123,15 @@
 
     <!-- Right -->
     <div class="right-content">
+      <h1>Search Songs</h1>
+      <div class="search-box">
+        <input type="text" id="search" placeholder="Search song or artist...">
+        <button onclick="searchSong()">Search</button>
+      </div>
+
       <h1>Recommended Songs</h1>
-      <div class="song-container">
-        <div class="song" onclick="playOnlineSong(0)"><img src="https://picsum.photos/50/50?random=1"><div><h2>Song 1</h2><p>Artist 1</p></div><span>3:45</span></div>
-        <div class="song" onclick="playOnlineSong(1)"><img src="https://picsum.photos/50/50?random=2"><div><h2>Song 2</h2><p>Artist 2</p></div><span>4:05</span></div>
-        <div class="song" onclick="playOnlineSong(2)"><img src="https://picsum.photos/50/50?random=3"><div><h2>Song 3</h2><p>Artist 3</p></div><span>5:10</span></div>
+      <div class="song-container" id="song-list">
+        <!-- Songs dynamically generated -->
       </div>
     </div>
 
@@ -143,48 +148,52 @@
   </div>
   <input type="range" id="progress" value="0">
   <div class="controls">
+    <button onclick="prevSong()"><i class="fa fa-backward"></i></button>
     <button onclick="playPause()"><i class="fa fa-play" id="icon"></i></button>
+    <button onclick="nextSong()"><i class="fa fa-forward"></i></button>
+    <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
   </div>
 
   <!-- Audio -->
   <audio id="song">
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <source src="" type="audio/mpeg">
   </audio>
 </div>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
   // Swiper init
   new Swiper('.swiper', { loop:true, pagination:{ el:'.swiper-pagination', clickable:true } });
 
   const onlineSongs = [
-    {
-      title: "Song 1",
-      artist: "Artist 1",
-      cover: "https://picsum.photos/50/50?random=1",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-    },
-    {
-      title: "Song 2",
-      artist: "Artist 2",
-      cover: "https://picsum.photos/50/50?random=2",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-    },
-    {
-      title: "Song 3",
-      artist: "Artist 3",
-      cover: "https://picsum.photos/50/50?random=3",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-    }
+    { title: "Song 1", artist: "Artist 1", cover: "https://picsum.photos/50/50?random=1", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+    { title: "Song 2", artist: "Artist 2", cover: "https://picsum.photos/50/50?random=2", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+    { title: "Song 3", artist: "Artist 3", cover: "https://picsum.photos/50/50?random=3", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+    { title: "Song 4", artist: "GV Prakash", cover: "https://picsum.photos/50/50?random=4", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+    { title: "Song 5", artist: "Anirudh", cover: "https://picsum.photos/50/50?random=5", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
   ];
 
   const song = document.getElementById("song");
   const icon = document.getElementById("icon");
   const progress = document.getElementById("progress");
+  const volume = document.getElementById("volume");
   const playerTitle = document.getElementById("player-title");
   const playerArtist = document.getElementById("player-artist");
   const playerCover = document.getElementById("player-cover");
+  const songList = document.getElementById("song-list");
+
+  let currentIndex = 0;
+
+  function renderSongList(songs){
+    songList.innerHTML = '';
+    songs.forEach((s, i)=>{
+      const div = document.createElement('div');
+      div.className = 'song';
+      div.innerHTML = `<img src="${s.cover}"><div><h2>${s.title}</h2><p>${s.artist}</p></div><span>3:45</span>`;
+      div.onclick = ()=>{ currentIndex=i; playOnlineSong(i); };
+      songList.appendChild(div);
+    });
+  }
 
   function playOnlineSong(index){
     const s = onlineSongs[index];
@@ -205,9 +214,30 @@
     }
   }
 
+  function nextSong(){
+    currentIndex = (currentIndex+1) % onlineSongs.length;
+    playOnlineSong(currentIndex);
+  }
+
+  function prevSong(){
+    currentIndex = (currentIndex-1 + onlineSongs.length) % onlineSongs.length;
+    playOnlineSong(currentIndex);
+  }
+
+  function searchSong(){
+    const query = document.getElementById('search').value.toLowerCase();
+    const filtered = onlineSongs.filter(s => s.title.toLowerCase().includes(query) || s.artist.toLowerCase().includes(query));
+    renderSongList(filtered);
+  }
+
   song.onloadedmetadata = ()=>progress.max = song.duration;
   song.ontimeupdate = ()=>progress.value = song.currentTime;
   progress.oninput = ()=>song.currentTime = progress.value;
+  volume.oninput = ()=>song.volume = volume.value;
+
+  // Initial render
+  renderSongList(onlineSongs);
+  playOnlineSong(0);
 </script>
 
 </body>
