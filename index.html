@@ -1,225 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Listening Hub</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listening Hub - Spotify Style</title>
 
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
   <!-- Swiper -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="Src/style.css" />
+  <style>
+    /* --- Basic Reset --- */
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
+    body { background:#121212; color:white; }
 
-  <link rel="shortcut icon" href="Src/ico.svg" type="image/x-icon" />
+    /* --- Layout --- */
+    main { display:flex; height:100vh; overflow:hidden; }
+
+    /* Sidebar */
+    .main-menu { width:220px; background:#181818; display:flex; flex-direction:column; justify-content:space-between; padding:20px; }
+    .main-menu .user-info { text-align:center; margin-bottom:30px; }
+    .main-menu img { width:70px; border-radius:50%; margin-bottom:10px; }
+    .main-menu ul { list-style:none; }
+    .main-menu li { margin:15px 0; }
+    .main-menu a { text-decoration:none; color:white; display:flex; align-items:center; gap:10px; font-size:16px; }
+    .main-menu li.active a { color:#1DB954; }
+
+    /* Main content */
+    .content { flex:1; display:flex; overflow-y:auto; padding:20px; gap:20px; }
+    .left-content { flex:2; }
+    .right-content { flex:1; }
+
+    /* Swiper slider */
+    .swiper { width:100%; margin-bottom:30px; }
+    .swiper-slide { position:relative; border-radius:10px; overflow:hidden; }
+    .swiper-slide img { width:100%; display:block; height:200px; object-fit:cover; }
+    .slide-overlay { position:absolute; bottom:0; left:0; width:100%; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding:10px; color:white; }
+    .slide-overlay button { background:#1DB954; border:none; padding:5px 10px; border-radius:20px; cursor:pointer; color:white; margin-top:5px; }
+
+    /* Artists / Albums */
+    .artist-container, .album-container { display:flex; gap:15px; overflow-x:auto; }
+    .artist, .album { min-width:120px; flex-shrink:0; text-align:center; cursor:pointer; }
+    .artist img, .album img { width:100%; border-radius:10px; object-fit:cover; }
+    .albums h2, .artist p { font-size:14px; margin-top:5px; }
+
+    /* Songs */
+    .song-container { display:flex; flex-direction:column; gap:15px; }
+    .song { display:flex; align-items:center; justify-content:space-between; background:#181818; padding:10px; border-radius:10px; cursor:pointer; }
+    .song img { width:50px; height:50px; border-radius:5px; object-fit:cover; }
+    .song div { flex:1; margin-left:10px; }
+    .song span { font-size:14px; color:#b3b3b3; }
+
+    /* --- Bottom Music Player --- */
+    .music-player { position:fixed; bottom:0; left:0; width:100%; background:#181818; display:flex; align-items:center; justify-content:space-between; padding:10px 20px; border-top:1px solid #282828; }
+    .music-player img { width:50px; height:50px; border-radius:5px; object-fit:cover; }
+    .music-player .song-info { flex:1; margin-left:15px; }
+    .music-player h2 { font-size:16px; }
+    .music-player p { font-size:12px; color:#b3b3b3; }
+    .music-player .controls { display:flex; align-items:center; gap:15px; }
+    .music-player input[type=range] { flex:1; margin:0 15px; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width:8px; height:8px; }
+    ::-webkit-scrollbar-thumb { background:#1DB954; border-radius:4px; }
+    ::-webkit-scrollbar-track { background:#121212; }
+
+  </style>
 </head>
 
 <body>
+
 <main>
 
   <!-- Sidebar -->
   <nav class="main-menu">
     <div>
       <div class="user-info">
-        <img src="Src/lg1.jpg" alt="User Profile" />
+        <img src="Src/lg1.jpg" alt="User Profile">
         <p>Thomas Shelby</p>
       </div>
-
       <ul>
-        <li class="nav-item active"><a href="#"><i class="fa fa-map"></i><span>Discover</span></a></li>
-        <li class="nav-item"><a href="#"><i class="fa fa-arrow-trend-up"></i><span>Trending</span></a></li>
-        <li class="nav-item"><a href="#"><i class="fa fa-compact-disc"></i><span>Album</span></a></li>
-        <li class="nav-item"><a href="#"><i class="fa fa-circle-play"></i><span>Playlist</span></a></li>
-        <li class="nav-item"><a href="#"><i class="fa fa-heart"></i><span>Favorites</span></a></li>
+        <li class="nav-item active"><a href="#"><i class="fa fa-map"></i>Discover</a></li>
+        <li class="nav-item"><a href="#"><i class="fa fa-arrow-trend-up"></i>Trending</a></li>
+        <li class="nav-item"><a href="#"><i class="fa fa-compact-disc"></i>Album</a></li>
+        <li class="nav-item"><a href="#"><i class="fa fa-circle-play"></i>Playlist</a></li>
+        <li class="nav-item"><a href="#"><i class="fa fa-heart"></i>Favorites</a></li>
       </ul>
     </div>
-
     <ul>
-      <li class="nav-item"><a href="#"><i class="fa fa-user"></i><span>Account</span></a></li>
-      <li class="nav-item"><a href="#"><i class="fa fa-gear"></i><span>Settings</span></a></li>
-      <li class="nav-item"><a href="#"><i class="fa fa-right-from-bracket"></i><span>Logout</span></a></li>
+      <li class="nav-item"><a href="#"><i class="fa fa-user"></i>Account</a></li>
+      <li class="nav-item"><a href="#"><i class="fa fa-gear"></i>Settings</a></li>
+      <li class="nav-item"><a href="#"><i class="fa fa-right-from-bracket"></i>Logout</a></li>
     </ul>
   </nav>
 
   <!-- Main Content -->
   <section class="content">
 
-    <!-- LEFT -->
+    <!-- Left -->
     <div class="left-content">
-
-      <!-- Slider -->
-      <div class="slider-container">
-        <h1>Popular Playlist</h1>
-
-        <div class="swiper">
-          <div class="swiper-wrapper">
-
-            <div class="swiper-slide">
-              <img src="img/1.jpg" alt="Playlist 1">
-              <div class="slide-overlay">
-                <h2>Vibe Songs</h2>
-                <button>Listen Now <i class="fa-solid fa-circle-play"></i></button>
-              </div>
-            </div>
-
-            <div class="swiper-slide">
-              <img src="img/2.jpg" alt="Playlist 2">
-              <div class="slide-overlay">
-                <h2>Music ON</h2>
-                <button>Listen Now <i class="fa-solid fa-circle-play"></i></button>
-              </div>
-            </div>
-
-            <div class="swiper-slide">
-              <img src="img/3.jpg" alt="Playlist 3">
-              <div class="slide-overlay">
-                <h2>Spotify Hits</h2>
-                <button>Listen Now <i class="fa-solid fa-circle-play"></i></button>
-              </div>
-            </div>
-
-          </div>
-          <div class="swiper-pagination"></div>
+      <h1>Popular Playlist</h1>
+      <div class="swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><img src="img/1.jpg"><div class="slide-overlay"><h2>Vibe Songs</h2><button>Listen <i class="fa fa-play"></i></button></div></div>
+          <div class="swiper-slide"><img src="img/2.jpg"><div class="slide-overlay"><h2>Music ON</h2><button>Listen <i class="fa fa-play"></i></button></div></div>
+          <div class="swiper-slide"><img src="img/3.jpg"><div class="slide-overlay"><h2>Spotify Hits</h2><button>Listen <i class="fa fa-play"></i></button></div></div>
         </div>
+        <div class="swiper-pagination"></div>
       </div>
 
-      <!-- Artists -->
-      <div class="artists">
-        <h1>Featured Artists</h1>
-
-        <div class="artist-container">
-          <div class="artist"><img src="img/gvp.jpeg" alt="GV Prakash"><p>GV Prakash</p></div>
-          <div class="artist"><img src="img/anirudh.jpeg" alt="Anirudh"><p>Anirudh</p></div>
-          <div class="artist"><img src="img/28.jpg" alt="Jimin"><p>Jimin</p></div>
-          <div class="artist"><img src="img/24.jpg" alt="Billie Eilish"><p>Billie Eilish</p></div>
-        </div>
+      <h1>Featured Artists</h1>
+      <div class="artist-container">
+        <div class="artist"><img src="img/gvp.jpeg"><p>GV Prakash</p></div>
+        <div class="artist"><img src="img/anirudh.jpeg"><p>Anirudh</p></div>
+        <div class="artist"><img src="img/28.jpg"><p>Jimin</p></div>
+        <div class="artist"><img src="img/24.jpg"><p>Billie Eilish</p></div>
       </div>
 
-      <!-- Albums -->
-      <div class="albums">
-        <h1>Recommended Albums</h1>
-
-        <div class="album-container">
-
-          <div class="album">
-            <img src="img/u1.jpeg" alt="Album 1">
-            <h2>Daily Mix 1</h2>
-            <p>ARR, SPB</p>
-          </div>
-
-          <div class="album">
-            <img src="img/play2.jpeg" alt="Album 2">
-            <h2>BP Playlist</h2>
-            <p>Pravin Boopathi</p>
-          </div>
-
-          <div class="album">
-            <img src="img/ilayaraja.jpeg" alt="Album 3">
-            <h2>Daily Mix 2</h2>
-            <p>Ilayaraja</p>
-          </div>
-
-        </div>
+      <h1>Recommended Albums</h1>
+      <div class="album-container">
+        <div class="album"><img src="img/u1.jpeg"><h2>Daily Mix 1</h2><p>ARR, SPB</p></div>
+        <div class="album"><img src="img/play2.jpeg"><h2>BP Playlist</h2><p>Pravin Boopathi</p></div>
+        <div class="album"><img src="img/ilayaraja.jpeg"><h2>Daily Mix 2</h2><p>Ilayaraja</p></div>
       </div>
-
     </div>
 
-    <!-- RIGHT -->
+    <!-- Right -->
     <div class="right-content">
-
-      <!-- Songs -->
-      <div class="recommended-songs">
-        <h1>Recommended Songs</h1>
-
-        <div class="song-container">
-
-          <div class="song">
-            <img src="img/oru.jpeg" alt="Oru Naalil">
-            <div>
-              <h2>Oru Naalil</h2>
-              <p>Yuvan</p>
-            </div>
-            <span>6:25</span>
-          </div>
-
-          <div class="song">
-            <img src="img/venmegam.jpeg" alt="Venmegam">
-            <div>
-              <h2>Venmegam Pennaga</h2>
-              <p>Yuvan</p>
-            </div>
-            <span>4:39</span>
-          </div>
-
-        </div>
+      <h1>Recommended Songs</h1>
+      <div class="song-container">
+        <div class="song"><img src="img/oru.jpeg"><div><h2>Oru Naalil</h2><p>Yuvan</p></div><span>6:25</span></div>
+        <div class="song"><img src="img/venmegam.jpeg"><div><h2>Venmegam Pennaga</h2><p>Yuvan</p></div><span>4:39</span></div>
       </div>
-
-      <!-- Music Player -->
-      <div class="music-player">
-
-        <img src="images/album-cover.png" id="rotatingImage" alt="Album Cover">
-
-        <h2 id="songTitle">Redemption</h2>
-        <p id="artist">Besomorph & Coopex</p>
-
-        <audio id="song">
-          <source src="songs/sample.mp3" type="audio/mpeg">
-        </audio>
-
-        <input type="range" id="progress" value="0">
-
-        <div class="controls">
-          <button onclick="prevSong()"><i class="fa fa-backward"></i></button>
-          <button onclick="playPause()"><i class="fa fa-play" id="icon"></i></button>
-          <button onclick="nextSong()"><i class="fa fa-forward"></i></button>
-        </div>
-
-      </div>
-
     </div>
 
   </section>
 
 </main>
 
+<!-- Bottom Music Player -->
+<div class="music-player">
+  <img src="images/album-cover.png" alt="Album Cover">
+  <div class="song-info">
+    <h2>Oru Naalil</h2>
+    <p>Yuvan Shankar Raja</p>
+  </div>
+  <input type="range" id="progress" value="0">
+  <div class="controls">
+    <button onclick="playPause()"><i class="fa fa-play" id="icon"></i></button>
+  </div>
+
+  <!-- Audio -->
+  <audio id="song">
+    <source src="Oru-Naalil---It-All-Comes-Down-To-this!.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
 <script>
+  // Swiper init
+  new Swiper('.swiper', { loop:true, pagination:{ el:'.swiper-pagination', clickable:true } });
+
   const song = document.getElementById("song");
   const icon = document.getElementById("icon");
   const progress = document.getElementById("progress");
 
-  function playPause() {
-    if (song.paused) {
-      song.play();
-      icon.classList.replace("fa-play", "fa-pause");
-    } else {
+  function playPause(){
+    if(song.paused){
+      song.play().then(()=>{
+        icon.classList.replace("fa-play","fa-pause");
+      }).catch(err=>console.log(err));
+    }else{
       song.pause();
-      icon.classList.replace("fa-pause", "fa-play");
+      icon.classList.replace("fa-pause","fa-play");
     }
   }
 
-  song.ontimeupdate = function () {
-    progress.value = song.currentTime;
-  };
-
-  progress.oninput = function () {
-    song.currentTime = progress.value;
-  };
-
-  // Swiper init
-  new Swiper(".swiper", {
-    loop: true,
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true
-    }
-  });
+  song.onloadedmetadata = ()=>progress.max = song.duration;
+  song.ontimeupdate = ()=>progress.value = song.currentTime;
+  progress.oninput = ()=>song.currentTime = progress.value;
 </script>
 
 </body>
